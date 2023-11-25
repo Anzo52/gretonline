@@ -5,15 +5,14 @@ app = Flask(__name__)
 
 @app.route('/search', methods=['GET', 'POST'])
 def search_route():
-    if request.method == 'POST':
-        # Extract data from the form
-        username = request.form['username']
-        # Perform search with Maigret here
-        results = perform_maigret_search(username)
-        return render_template('results.html', results=results)
-    else:
+    if request.method != 'POST':
         # For a GET request, just display the search form
         return render_template('search_form.html')
+    # Extract data from the form
+    username = request.form['username']
+    # Perform search with Maigret here
+    results = perform_maigret_search(username)
+    return render_template('results.html', results=results)
 
 def perform_maigret_search(username):
     # Initialize Maigret database
@@ -29,12 +28,11 @@ def perform_maigret_search(username):
         return None
 
 def format_maigret_results(results):
-    # Format the results into a more readable form
-    formatted_results = {}
-    for site_name, data in results.items():
-        if data['exists']:
-            formatted_results[site_name] = data['url_user']
-    return formatted_results
+    return {
+        site_name: data['url_user']
+        for site_name, data in results.items()
+        if data['exists']
+    }
 
 if __name__ == '__main__':
     app.run(debug=True)
