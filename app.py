@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template
 from maigret import MaigretSite, MaigretDatabase, search as maigret_search
+from gretlogger import setup_logger
 
 app = Flask(__name__)
 
@@ -15,6 +16,7 @@ def search_route():
     return render_template('results.html', results=results)
 
 def perform_maigret_search(username):
+    logger = setup_logger(__name__)
     # Initialize Maigret database
     maigret_sites_file = './env/lib/python3.9/site-packages/maigret/resources/data.json'
     db = MaigretDatabase().load_from_file(maigret_sites_file)
