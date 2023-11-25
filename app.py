@@ -23,7 +23,7 @@ def perform_maigret_search(username):
     db = MaigretDatabase().load_from_file()
 
     # List of sites to search on (optional, remove to search on all sites)
-    sites = [MaigretSite('Twitter'), MaigretSite('Facebook')]
+    # sites = [MaigretSite('Twitter'), MaigretSite('Facebook')]
 
     # Perform the search
     try:
