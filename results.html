@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Results</title>
+    <!-- Add any additional CSS or links here -->
+</head>
+<body>
+    <h1>Search Results</h1>
+    {% if results %}
+        <ul>
+        {% for site, url in results.items() %}
+            <li><a href="{{ url }}">{{ site }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+    <a href="/">New Search</a>
+</body>
+</html>
