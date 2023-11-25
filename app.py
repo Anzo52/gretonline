@@ -16,7 +16,8 @@ def search_route():
 
 def perform_maigret_search(username):
     # Initialize Maigret database
-    db = MaigretDatabase().load_from_file()
+    maigret_sites_file = './env/lib/python3.9/site-packages/maigret/resources/data.json'
+    db = MaigretDatabase().load_from_file(maigret_sites_file)
 
     # Perform the search
     try:
