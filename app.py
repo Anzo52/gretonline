@@ -1,10 +1,10 @@
 from flask import Flask, request, render_template
-from maigret import MaigretSite, MaigretDatabase, search
+from maigret import MaigretSite, MaigretDatabase, search as maigret_search
 
 app = Flask(__name__)
 
 @app.route('/search', methods=['GET', 'POST'])
-def search():
+def search_route():
     if request.method == 'POST':
         # Extract data from the form
         username = request.form['username']
@@ -15,19 +15,13 @@ def search():
         # For a GET request, just display the search form
         return render_template('search_form.html')
 
-
-
-
 def perform_maigret_search(username):
     # Initialize Maigret database
     db = MaigretDatabase().load_from_file()
 
-    # List of sites to search on (optional, remove to search on all sites)
-    # sites = [MaigretSite('Twitter'), MaigretSite('Facebook')]
-
     # Perform the search
     try:
-        result = search(username, db, sites_list=sites)
+        result = maigret_search(username, db)
         # Format and return the results
         return format_maigret_results(result)
     except Exception as e:
@@ -36,7 +30,6 @@ def perform_maigret_search(username):
 
 def format_maigret_results(results):
     # Format the results into a more readable form
-    # This is a placeholder, you can format the results as you need
     formatted_results = {}
     for site_name, data in results.items():
         if data['exists']:
