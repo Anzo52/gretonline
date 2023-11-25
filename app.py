@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template
+from maigret import MaigretSite, MaigretDatabase, search
 
 app = Flask(__name__)
 
