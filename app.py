@@ -23,11 +23,11 @@ def perform_maigret_search(username):
 
     # Perform the search
     try:
-        result = maigret_search(username, db)
+        result = maigret_search(username, db, logger)
         # Format and return the results
         return format_maigret_results(result)
     except Exception as e:
-        print(f"Error during search: {e}")
+        logger.error(f"Error while searching for {username}: {e}")
         return None
 
 def format_maigret_results(results):
