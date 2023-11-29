@@ -9,13 +9,13 @@ app = Flask(__name__)
 
 
 @app.route("/", methods=["GET", "POST"])
-def index():
+async def index():
     if request.method == "POST":
         # Get username from form
         username = request.form.get("username")
 
         # Perform Maigret search
-        results = perform_maigret_search(username)
+        results = await perform_maigret_search(username)
 
         # Render results template
         return render_template("results.html", results=results)
