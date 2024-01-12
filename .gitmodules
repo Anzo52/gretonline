@@ -1,0 +1,6 @@
+[submodule "maigret-adapter"]
+	path = maigret-adapter
+	url = https://github.com/soxoj/maigret-adapter.git
+[submodule "v2/maigret-adapter"]
+	path = v2/maigret-adapter
+	url = https://github.com/soxoj/maigret-adapter.git
