@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Maigret Search</title>
+    <script src="/static/js/search.js"></script>
+</head>
+
+<body>
+    <h1>Welcome to Maigret Search</h1>
+    <form onsubmit="event.preventDefault(); search();">
+        <input type="text" id="query" name="query" placeholder="Enter your search query">
+        <button type="submit">Search</button>
+    </form>
+    <div id="searchResults">
+        <!-- Search results will be displayed here -->
+    </div>
+</body>
+
+</html>
