@@ -1,3 +1,11 @@
+const observer = new MutationObserver(function (mutationsList) {
+    for (let mutation of mutationsList) {
+        if (mutation.type === 'childList') {
+            // Update the DOM with the search results here
+        }
+    }
+});
+
 document.getElementById("searchForm").addEventListener("submit", function (event) {
     event.preventDefault();
     let username = document.getElementById("username").value;
@@ -11,8 +19,8 @@ document.getElementById("searchForm").addEventListener("submit", function (event
         .then(response => response.json())
         .then(data => {
             console.log('Success:', data);
-            // Update the DOM with the search results here
-
+            // Perform DOM manipulation here
+            observer.observe(document.body, { childList: true, subtree: true });
         })
         .catch((error) => {
             console.error('Error:', error);
