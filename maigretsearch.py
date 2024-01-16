@@ -1,18 +1,22 @@
 import asyncio
 from maigret.sites import MaigretSite
 from maigret.maigret import maigret as maigret_search
-from maigret.maigret import extract_ids_from_page
-from maigret.maigret import extract_ids_from_results
-from maigret.result import QueryResult, QueryStatus
-from gretlogger import setup_logger
 from maigret.result import QueryResult
 import logging
 
+# Set up logging for this module
 logger = logging.getLogger(__name__)
 
-
 def format_maigret_results(results: list[QueryResult]) -> list[dict]:
-    """Format Maigret results for use in Jinja template."""
+    """
+    Format Maigret results for use in Jinja template.
+    
+    Args:
+        results (list[QueryResult]): A list of QueryResult objects from Maigret search.
+
+    Returns:
+        list[dict]: Formatted results as a list of dictionaries.
+    """
     formatted_results = []
     for result in results:
         formatted_result = {
@@ -24,52 +28,37 @@ def format_maigret_results(results: list[QueryResult]) -> list[dict]:
         formatted_results.append(formatted_result)
     return formatted_results
 
-
 async def perform_maigret_search(username: str) -> list[QueryResult]:
-    
+    """
+    Perform an asynchronous Maigret search.
+
+    Args:
+        username (str): Username to search for.
+
+    Returns:
+        list[QueryResult]: The results from the Maigret search.
+    """
+    # Placeholder information for MaigretSite
     info = {
         'username_claimed': 'claimed_username',
         'username_unclaimed': 'unclaimed_username',
     }
+
+    # Create a MaigretSite object with the provided username and info
     site = MaigretSite(username, info)
+
+    # Perform the search and return results
     return await maigret_search(site)
 
-
 def perform_maigret_search_sync(username: str) -> list[QueryResult]:
-    """Perform Maigret search synchronously."""
-    # Create MaigretSite object
-    info = {
-        'username_claimed': 'claimed_username',
-        'username_unclaimed': 'unclaimed_username',
-    }
-    site = MaigretSite(username, info)
+    """
+    Perform a synchronous Maigret search.
 
-    return asyncio.run(maigret_search(site))
+    Args:
+        username (str): Username to search for.
 
+    Returns:
+        list[QueryResult]: The results from the Maigret search.
+    """
+    return asyncio.run(perform_maigret_search(username))
 
-async def perform_maigret_search_with_ids(username: str) -> list[QueryResult]:
-    """Perform Maigret search asynchronously with IDs."""
-    # Create MaigretSite object
-    site = MaigretSite(username)
-
-    # Extract IDs from page
-    ids = await extract_ids_from_page(site)
-
-    # Extract IDs from results
-    ids = await extract_ids_from_results(site, ids)
-
-    return await maigret_search(site, ids=ids)
-
-
-def perform_maigret_search_with_ids_sync(username: str) -> list[QueryResult]:
-    """Perform Maigret search synchronously with IDs."""
-    # Create MaigretSite object
-    site = MaigretSite(username)
-
-    # Extract IDs from page
-    ids = asyncio.run(extract_ids_from_page(site))
-
-    # Extract IDs from results
-    ids = asyncio.run(extract_ids_from_results(site, ids))
-
-    return asyncio.run(maigret_search(site, ids=ids))
