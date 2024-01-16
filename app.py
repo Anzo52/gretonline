@@ -1,29 +1,37 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, jsonify
 import asyncio
-import logging
-from maigretsearch import perform_maigret_search
+from maigret.maigret import maigret as maigret_search
+from maigret.sites import MaigretSite
+from gretlogger import setup_logger
 
-
-# Initialize Flask app
 app = Flask(__name__)
 
+async def async_maigret_search(username, information, logger):
+    """Asynchronously perform a search using Maigret."""
+    site = MaigretSite(username, information)
+    return await maigret_search(username, information, logger)
 
-@app.route("/", methods=["GET", "POST"])
-async def index():
-    if request.method == "POST":
-        # Get username from form
-        username = request.form.get("username")
+@app.route("/search", methods=["POST"])
+def search():
+    """Endpoint to perform username search."""
+    data = request.get_json()
+    username = data.get("username")
 
-        # Perform Maigret search
-        results = await perform_maigret_search(username)
+    # Set up logger
+    logging = data.get("logging")
+    logger = setup_logger("maigret", level=logging.DEBUG)
 
-        # Render results template
-        return render_template("results.html", results=results)
+    # Set up information
+    information = data.get("information")  # Define the "information" variable
 
-    # Render index template
-    return render_template("index.html")
+    # Performing the search asynchronously
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    results = loop.run_until_complete(async_maigret_search(username, information, logger))
+    loop.close()
 
+    return jsonify(results)
 
 
 if __name__ == "__main__":
-    app.run(debug=True, use_reloader=True)
+    app.run(debug=True)

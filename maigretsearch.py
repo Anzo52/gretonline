@@ -5,8 +5,10 @@ from maigret.maigret import extract_ids_from_page
 from maigret.maigret import extract_ids_from_results
 from maigret.result import QueryResult, QueryStatus
 from gretlogger import setup_logger
+from maigret.result import QueryResult
+import logging
 
-logger = setup_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def format_maigret_results(results: list[QueryResult]) -> list[dict]:
@@ -14,30 +16,33 @@ def format_maigret_results(results: list[QueryResult]) -> list[dict]:
     formatted_results = []
     for result in results:
         formatted_result = {
-            "site": result.site,
+            "site": result.site_name,
             "status": result.status,
-            "url": result.url,
-            "details": result.details,
-            "cookies": result.cookies,
-            "username": result.username,
-            "password": result.password,
+            "url": result.site_url_user,
+            "details": result.context
         }
         formatted_results.append(formatted_result)
     return formatted_results
 
 
 async def perform_maigret_search(username: str) -> list[QueryResult]:
-    """Perform Maigret search asynchronously."""
-    # Create MaigretSite object
-    site = MaigretSite(username)
-
+    
+    info = {
+        'username_claimed': 'claimed_username',
+        'username_unclaimed': 'unclaimed_username',
+    }
+    site = MaigretSite(username, info)
     return await maigret_search(site)
 
 
 def perform_maigret_search_sync(username: str) -> list[QueryResult]:
     """Perform Maigret search synchronously."""
     # Create MaigretSite object
-    site = MaigretSite(username)
+    info = {
+        'username_claimed': 'claimed_username',
+        'username_unclaimed': 'unclaimed_username',
+    }
+    site = MaigretSite(username, info)
 
     return asyncio.run(maigret_search(site))
 
