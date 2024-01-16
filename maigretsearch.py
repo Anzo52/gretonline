@@ -5,6 +5,8 @@ from maigret.maigret import extract_ids_from_page
 from maigret.maigret import extract_ids_from_results
 from maigret.result import QueryResult, QueryStatus
 from gretlogger import setup_logger
+from maigret.result import QueryResult
+from maigret.result import QueryResult
 
 logger = setup_logger(__name__)
 
@@ -14,13 +16,10 @@ def format_maigret_results(results: list[QueryResult]) -> list[dict]:
     formatted_results = []
     for result in results:
         formatted_result = {
-            "site": result.site,
+            "site": result.site_name,
             "status": result.status,
-            "url": result.url,
-            "details": result.details,
-            "cookies": result.cookies,
-            "username": result.username,
-            "password": result.password,
+            "url": result.site_url_user,
+            "details": result.context
         }
         formatted_results.append(formatted_result)
     return formatted_results
