@@ -1,29 +1,45 @@
-from flask import Flask, request, render_template
-import asyncio
+from flask import Flask, request, render_template, abort
 import logging
 from maigretsearch import perform_maigret_search
 
-
-# Initialize Flask app
 app = Flask(__name__)
 
+def configure_logging():
+    logging.basicConfig(level=logging.INFO)
 
-@app.route("/", methods=["GET", "POST"])
-async def index():
-    if request.method == "POST":
-        # Get username from form
-        username = request.form.get("username")
+def load_configuration(app):
+    # Load configuration from environment variables or configuration file
+    app.config.from_pyfile('config.py', silent=True)
 
-        # Perform Maigret search
-        results = await perform_maigret_search(username)
+def validate_username(username):
+    if not username:
+        logging.error("No username provided")
+        abort(400, description="No username provided")
+    return username
 
-        # Render results template
-        return render_template("results.html", results=results)
+async def perform_search(username):
+    return await perform_maigret_search(username)
 
-    # Render index template
-    return render_template("index.html")
+def configure_routes(app):
+    @app.route("/", methods=["GET", "POST"])
+    async def index():
+        try:
+            if request.method == "POST":
+                username = validate_username(request.form.get("username"))
+                results = await perform_search(username)
+                logging.info(f"Search performed for username: {username}")
+                return render_template("results.html", results=results)
 
+            return render_template("index.html")
+        except Exception as e:
+            logging.error(f"An error occurred: {e}")
+            abort(500, description="Internal Server Error")
 
+def main():
+    configure_logging()
+    load_configuration(app)
+    configure_routes(app)
+    app.run(debug=app.config.get('DEBUG', False), use_reloader=True)
 
 if __name__ == "__main__":
-    app.run(debug=True, use_reloader=True)
+    main()
